@@ -7,7 +7,7 @@ const emailRegistro = async (datos) => {
     const { email, nombre, token } = datos;
 
     const response = await resend.emails.send({
-      from: 'APV - Administrador de Pacientes <no-reply@apv.com>',
+      from: 'onboarding@resend.dev', // Cambiado para funcionar sin dominio propio
       to: email,
       subject: "Verifica tu cuenta en APV",
       html: `
