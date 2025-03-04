@@ -1,27 +1,15 @@
-import nodemailer from "nodemailer";
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const emailRegistro = async (datos) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    // Verificar conexión con el servidor SMTP antes de enviar el correo
-    await transporter.verify();
-    console.log("Servidor de correo listo para enviar mensajes.");
-
     const { email, nombre, token } = datos;
 
-    const info = await transporter.sendMail({
-      from: '"APV - Administrador de Pacientes" <no-reply@apv.com>',
+    const response = await resend.emails.send({
+      from: 'APV - Administrador de Pacientes <no-reply@apv.com>',
       to: email,
       subject: "Verifica tu cuenta en APV",
-      text: `Hola ${nombre}, confirma tu cuenta en APV.`,
       html: `
         <p>Hola <strong>${nombre}</strong>,</p>
         <p>Tu cuenta ya está lista, pero debes confirmarla haciendo clic en el siguiente enlace:</p>
@@ -35,7 +23,7 @@ const emailRegistro = async (datos) => {
       `,
     });
 
-    console.log("Correo enviado correctamente: %s", info.messageId);
+    console.log("Correo enviado correctamente:", response);
   } catch (error) {
     console.error("Error al enviar el correo:", error);
   }
